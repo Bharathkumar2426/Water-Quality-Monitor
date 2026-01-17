@@ -1,3 +1,27 @@
+
 **/__pycache__/**
 **/.ipynb_checkpoints/**
 **/database.db
+
+# Python
+venv/
+__pycache__/
+*.pyc
+
+# Node
+node_modules/
+
+# Environment files
+.env
+
+# Build / cache
+dist/
+build/
+.cache/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
