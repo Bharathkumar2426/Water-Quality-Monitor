@@ -34,3 +34,10 @@ def test_db():
 
 app.include_router(auth.router)
 
+from backend.routers import reports
+
+app.include_router(reports.router)
+
+from backend.routers import stations
+
+app.include_router(stations.router)

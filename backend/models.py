@@ -33,3 +33,71 @@ class UserLogin(BaseModel):
 class TokenResponse(BaseModel):
     access_token: str
     token_type: str
+
+# =========================
+# WEEK 3 - REPORT MODEL
+# =========================
+
+from sqlalchemy import ForeignKey, Text
+
+class Report(Base):
+    __tablename__ = "reports"
+
+    id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, ForeignKey("users.id"))
+    photo_url = Column(String)
+    location = Column(String)
+    description = Column(Text)
+    water_source = Column(String)
+    status = Column(String, default="pending")
+    created_at = Column(TIMESTAMP, server_default=func.now())
+
+
+from pydantic import BaseModel
+
+class ReportCreate(BaseModel):
+    photo_url: str
+    location: str
+    description: str
+    water_source: str
+
+# =========================
+# WEEK 4 - STATION MODELS
+# =========================
+
+from sqlalchemy import Float, ForeignKey
+
+class WaterStation(Base):
+    __tablename__ = "water_stations"
+
+    id = Column(Integer, primary_key=True)
+    name = Column(String)
+    location = Column(String)
+    latitude = Column(Float)
+    longitude = Column(Float)
+    managed_by = Column(String)
+    created_at = Column(TIMESTAMP, server_default=func.now())
+
+
+class StationReading(Base):
+    __tablename__ = "station_readings"
+
+    id = Column(Integer, primary_key=True)
+    station_id = Column(Integer, ForeignKey("water_stations.id"))
+    parameter = Column(String)
+    value = Column(Float)
+    recorded_at = Column(TIMESTAMP, server_default=func.now())
+
+class StationCreate(BaseModel):
+    name: str
+    location: str
+    latitude: float
+    longitude: float
+    managed_by: str
+
+
+from pydantic import BaseModel
+from typing import Literal
+
+class ReportActionSchema(BaseModel):
+    action: Literal["verified", "rejected"]
