@@ -34,6 +34,7 @@ class TokenResponse(BaseModel):
     access_token: str
     token_type: str
 
+
 # =========================
 # WEEK 3 - REPORT MODEL
 # =========================

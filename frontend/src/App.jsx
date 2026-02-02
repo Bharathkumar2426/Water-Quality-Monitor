@@ -4,6 +4,7 @@ import Stations from "./components/Stations";
 import Reports from "./components/Reports";
 import ReportForm from "./components/ReportForm";
 
+
 export default function App() {
   const [activeTab, setActiveTab] = useState("login");
   const [email, setEmail] = useState("");
@@ -14,6 +15,7 @@ export default function App() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(false);
   const [dashboardView, setDashboardView] = useState("map");
+
 
   const login = async () => {
     if (!email || !password) {
@@ -110,6 +112,7 @@ export default function App() {
     loadUser();
   }, []);
 
+
   /* ================= DASHBOARD ================= */
   if (user) {
     return (
@@ -162,14 +165,17 @@ export default function App() {
           {dashboardView === "reports" && <Reports />}
           {dashboardView === "submit" && <ReportForm />}
         </main>
+
       </div>
     );
   }
+
 
   /* ================= AUTH (LOGIN / REGISTER) ================= */
   return (
     <div className="min-h-screen flex items-center justify-center bg-slate-100">
       <div className="bg-white w-[420px] rounded-xl shadow-lg p-6">
+
         {/* Tabs */}
         <div className="flex mb-6 border-b">
           <button
@@ -211,7 +217,9 @@ export default function App() {
             <button
               onClick={login}
               disabled={loading}
+
               className="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600"
+
             >
               {loading ? "Signing in..." : "Login"}
             </button>
@@ -254,7 +262,9 @@ export default function App() {
             <button
               onClick={register}
               disabled={loading}
+
               className="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600"
+
             >
               {loading ? "Creating account..." : "Register"}
             </button>

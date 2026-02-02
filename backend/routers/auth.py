@@ -66,5 +66,3 @@ def my_profile(current_user = Depends(get_current_user)):
         "message": "Authenticated user",
         "user": current_user
     }
-
-
