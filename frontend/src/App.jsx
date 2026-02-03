@@ -1,4 +1,9 @@
 import { useState, useEffect } from "react";
+import StationMap from "./components/StationMap";
+import Stations from "./components/Stations";
+import Reports from "./components/Reports";
+import ReportForm from "./components/ReportForm";
+
 
 export default function App() {
   const [activeTab, setActiveTab] = useState("login");
@@ -9,6 +14,7 @@ export default function App() {
   const [role, setRole] = useState("citizen");
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [dashboardView, setDashboardView] = useState("map");
 
 
   const login = async () => {
@@ -107,31 +113,67 @@ export default function App() {
   }, []);
 
 
+  /* ================= DASHBOARD ================= */
   if (user) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-100">
-        <div className="bg-white w-96 p-6 rounded-xl shadow">
-          <h2 className="text-xl font-semibold text-center mb-4">
-            Dashboard
-          </h2>
-          <div className="text-sm space-y-2">
-            <p><b>Email:</b> {user.email}</p>
-            <p><b>Role:</b> {user.role}</p>
+      <div className="min-h-screen bg-slate-100">
+        {/* TOP NAVBAR */}
+        <header className="bg-white border-b shadow-sm px-6 py-3 flex justify-between items-center">
+          <h1 className="text-lg font-semibold text-slate-700">
+            Water Quality Dashboard
+          </h1>
+
+          <div className="flex gap-2 flex-wrap">
+            <button
+              onClick={() => setDashboardView("map")}
+              className="px-3 py-1 rounded bg-slate-200 hover:bg-slate-300"
+            >
+              Map
+            </button>
+            <button
+              onClick={() => setDashboardView("stations")}
+              className="px-3 py-1 rounded bg-slate-200 hover:bg-slate-300"
+            >
+              Stations
+            </button>
+            <button
+              onClick={() => setDashboardView("reports")}
+              className="px-3 py-1 rounded bg-slate-200 hover:bg-slate-300"
+            >
+              Reports
+            </button>
+            <button
+              onClick={() => setDashboardView("submit")}
+              className="px-3 py-1 rounded bg-slate-200 hover:bg-slate-300"
+            >
+              Submit Report
+            </button>
+
+            <button
+              onClick={logout}
+              className="px-3 py-1 rounded bg-red-500 text-white hover:bg-red-600"
+            >
+              Logout
+            </button>
           </div>
-          <button
-            onClick={logout}
-            className="mt-6 w-full bg-red-500 text-white py-2 rounded-lg"
-          >
-            Logout
-          </button>
-        </div>
+        </header>
+
+        {/* CONTENT */}
+        <main className="p-6">
+          {dashboardView === "map" && <StationMap />}
+          {dashboardView === "stations" && <Stations />}
+          {dashboardView === "reports" && <Reports />}
+          {dashboardView === "submit" && <ReportForm />}
+        </main>
+
       </div>
     );
   }
 
 
+  /* ================= AUTH (LOGIN / REGISTER) ================= */
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
+    <div className="min-h-screen flex items-center justify-center bg-slate-100">
       <div className="bg-white w-[420px] rounded-xl shadow-lg p-6">
 
         {/* Tabs */}
@@ -175,7 +217,9 @@ export default function App() {
             <button
               onClick={login}
               disabled={loading}
-              className="w-full bg-blue-500 text-white py-2 rounded-lg"
+
+              className="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600"
+
             >
               {loading ? "Signing in..." : "Login"}
             </button>
@@ -218,7 +262,9 @@ export default function App() {
             <button
               onClick={register}
               disabled={loading}
-              className="w-full bg-blue-500 text-white py-2 rounded-lg"
+
+              className="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600"
+
             >
               {loading ? "Creating account..." : "Register"}
             </button>
