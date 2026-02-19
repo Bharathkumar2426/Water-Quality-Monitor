@@ -7,6 +7,7 @@ import Alerts from "./components/Alerts";
 import StationHistory from "./components/StationHistory";
 
 
+
 export default function App() {
   const [activeTab, setActiveTab] = useState("login");
   const [email, setEmail] = useState("");
@@ -150,6 +151,7 @@ export default function App() {
             >
               Submit Report
             </button>
+
             <button
   onClick={() => setDashboardView("history")}
   className="px-3 py-1 rounded bg-slate-200 hover:bg-slate-300"
@@ -185,6 +187,7 @@ export default function App() {
   </button>
 
 </div>
+
 
           </div>
         </header>

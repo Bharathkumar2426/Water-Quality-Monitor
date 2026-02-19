@@ -35,6 +35,7 @@ class TokenResponse(BaseModel):
     access_token: str
     token_type: str
 
+
 class Report(Base):
     __tablename__ = "reports"
 
@@ -48,12 +49,14 @@ class Report(Base):
     created_at = Column(TIMESTAMP, server_default=func.now())
     alert_id = Column(Integer, nullable=True)
 
+
 class ReportCreate(BaseModel):
     photo_url: str
     location: str
     description: str
     water_source: str
     alert_id: Optional[int] = None
+
 
 
 class WaterStation(Base):
@@ -66,6 +69,7 @@ class WaterStation(Base):
     longitude = Column(Float)
     managed_by = Column(String)
     created_at = Column(TIMESTAMP, server_default=func.now())
+
 
 class StationReading(Base):
     __tablename__ = "station_readings"
@@ -106,4 +110,5 @@ class Alert(Base):
 class StationReadingCreate(BaseModel):
     parameter: str
     value: float
+
 

@@ -40,6 +40,7 @@ def test_db():
 
 app.include_router(auth.router)
 
+
 from backend.routers import reports
 
 app.include_router(reports.router)
@@ -51,3 +52,4 @@ app.include_router(stations.router)
 from backend.routers.alerts import router as alerts_router
 
 app.include_router(alerts_router)
+

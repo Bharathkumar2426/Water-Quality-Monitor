@@ -7,6 +7,7 @@ from fastapi import HTTPException
 from backend.security import get_current_user
 from datetime import datetime
 
+
 router = APIRouter(
     prefix="/stations",
     tags=["Stations"]
@@ -30,7 +31,9 @@ def get_stations(db: Session = Depends(get_db)):
 def get_station_readings(station_id: int, db: Session = Depends(get_db)):
     return db.query(StationReading).filter(
         StationReading.station_id == station_id
+
     ).order_by(StationReading.recorded_at.asc()).all()
+
 
 @router.post("/")
 def create_station(
@@ -57,6 +60,7 @@ def create_station(
         "message": "Station added successfully",
         "station_id": station.id
     }
+
 
 THRESHOLDS = {
     "pH": 8.5,
@@ -102,3 +106,4 @@ def create_station_reading(
         "message": "Reading added successfully",
         "reading_id": reading.id
     }
+

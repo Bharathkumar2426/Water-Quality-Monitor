@@ -6,16 +6,20 @@ export default function Reports() {
   const token = localStorage.getItem("token");
 
 
+
   useEffect(() => {
     fetch("http://127.0.0.1:8000/reports", {
       headers: {
+
         Authorization: `Bearer ${token}`,
+
       },
     })
       .then((res) => res.json())
       .then((data) => setReports(data))
       .catch((err) => console.error("Reports error:", err));
   }, []);
+
     useEffect(() => {
   const fetchUser = async () => {
     const res = await fetch("http://127.0.0.1:8000/auth/me", {
@@ -34,17 +38,21 @@ export default function Reports() {
 
   const handleAction = async (reportId, action) => {
   try {
+
     const res = await fetch(
       `http://127.0.0.1:8000/reports/${reportId}/action`,
       {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+
           Authorization: `Bearer ${token}`,
+
         },
         body: JSON.stringify({ action }),
       }
     );
+
 
     const data = await res.json();
 
@@ -54,11 +62,13 @@ export default function Reports() {
     }
 
     // Update status locally
+
     setReports((prev) =>
       prev.map((r) =>
         r.id === reportId ? { ...r, status: action } : r
       )
     );
+
 
   } catch (error) {
     console.error("Action error:", error);
@@ -113,7 +123,9 @@ export default function Reports() {
               </span>
             </p>
 
+
             {userRole === "authority" && report.status === "pending" && (
+
               <div className="flex gap-3">
                 <button
                   onClick={() =>
