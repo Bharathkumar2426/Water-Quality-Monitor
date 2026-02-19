@@ -2,47 +2,70 @@ import { useEffect, useState } from "react";
 
 export default function Reports() {
   const [reports, setReports] = useState([]);
+  const [userRole, setUserRole] = useState(null);
+  const token = localStorage.getItem("token");
 
-  // ✅ existing logic – unchanged
-  const user = JSON.parse(localStorage.getItem("user"));
-  console.log("LOGGED IN USER:", user);
 
   useEffect(() => {
     fetch("http://127.0.0.1:8000/reports", {
       headers: {
-        Authorization: `Bearer ${user?.token}`,
+        Authorization: `Bearer ${token}`,
       },
     })
       .then((res) => res.json())
       .then((data) => setReports(data))
       .catch((err) => console.error("Reports error:", err));
   }, []);
+    useEffect(() => {
+  const fetchUser = async () => {
+    const res = await fetch("http://127.0.0.1:8000/auth/me", {
+      headers: { Authorization: `Bearer ${token}` },
+    });
 
-  // ✅ existing logic – unchanged
+    if (res.ok) {
+      const data = await res.json();
+      setUserRole(data.user.role);
+    }
+  };
+
+  fetchUser();
+}, []);
+
+
   const handleAction = async (reportId, action) => {
+  try {
     const res = await fetch(
       `http://127.0.0.1:8000/reports/${reportId}/action`,
       {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${user.token}`,
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({ action }),
       }
     );
 
+    const data = await res.json();
+
     if (!res.ok) {
-      alert("Action failed");
+      alert(data.detail || "Action failed");
       return;
     }
 
+    // Update status locally
     setReports((prev) =>
       prev.map((r) =>
         r.id === reportId ? { ...r, status: action } : r
       )
     );
-  };
+
+  } catch (error) {
+    console.error("Action error:", error);
+    alert("Server error");
+  }
+};
+
 
   return (
     <div className="max-w-5xl mx-auto bg-white p-6 rounded-xl shadow">
@@ -90,8 +113,7 @@ export default function Reports() {
               </span>
             </p>
 
-            {/* ✅ AUTHORITY ONLY – unchanged logic */}
-            {user?.role === "authority" && (
+            {userRole === "authority" && report.status === "pending" && (
               <div className="flex gap-3">
                 <button
                   onClick={() =>

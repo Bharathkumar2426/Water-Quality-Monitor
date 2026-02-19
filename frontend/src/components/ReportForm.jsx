@@ -1,11 +1,13 @@
 import { useState } from "react";
 
-export default function ReportForm() {
+export default function ReportForm({setDashboardView}) {
   const [location, setLocation] = useState("");
   const [waterSource, setWaterSource] = useState("");
   const [description, setDescription] = useState("");
 
   const token = localStorage.getItem("token");
+  const alertId = localStorage.getItem("selectedAlertId");
+
 
   const submitReport = () => {
     fetch("http://127.0.0.1:8000/reports", {
@@ -19,6 +21,7 @@ export default function ReportForm() {
         water_source: waterSource,
         description: description,
         photo_url: "demo.jpg",
+        alert_id: alertId ? parseInt(alertId) : null,
       }),
     })
       .then((res) => {
@@ -32,6 +35,8 @@ export default function ReportForm() {
         setLocation("");
         setWaterSource("");
         setDescription("");
+        localStorage.removeItem("selectedAlertId");
+        setDashboardView("alerts");
       })
       .catch((err) => {
         console.error(err);

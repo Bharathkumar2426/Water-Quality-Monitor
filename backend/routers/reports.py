@@ -1,9 +1,12 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from backend.database import SessionLocal
-from backend.models import Report
+from backend.models import Report,Alert,ReportCreate
 from backend.security import get_current_user
 from pydantic import BaseModel
+
+class ReportActionSchema(BaseModel):
+    action: str
 
 
 router = APIRouter(
@@ -20,8 +23,6 @@ def get_db():
     finally:
         db.close()
 
-
-from backend.models import ReportCreate
 @router.post("/")
 def create_report(
     data: ReportCreate,
@@ -37,20 +38,25 @@ def create_report(
         location=data.location,
         description=data.description,
         water_source=data.water_source,
-
-        status="pending"
+        status="pending",
+        alert_id=data.alert_id   # ✅ important
     )
 
     db.add(report)
     db.commit()
     db.refresh(report)
 
+    # ✅ This must be inside the function
+    if report.alert_id:
+        alert = db.query(Alert).filter(Alert.id == report.alert_id).first()
+        if alert:
+            alert.report_id = report.id
+            db.commit()
+
     return {
         "message": "Report submitted successfully",
         "report_id": report.id
     }
-
-
 
 @router.get("/")
 def get_reports(db: Session = Depends(get_db)):
@@ -61,28 +67,32 @@ class ReportStatusUpdate(BaseModel):
     report_id: int
     status: str
 
-@router.post("/reports/{report_id}/action")
+@router.post("/{report_id}/action")
 def report_action(
     report_id: int,
-    action: str,
+    action_data: ReportActionSchema,
     db: Session = Depends(get_db),
     current_user=Depends(get_current_user)
 ):
-    # Role check
+    # 🔹 Allow only authority
     if current_user["role"] != "authority":
         raise HTTPException(status_code=403, detail="Only authority allowed")
 
+    # 🔹 Find report
     report = db.query(Report).filter(Report.id == report_id).first()
     if not report:
         raise HTTPException(status_code=404, detail="Report not found")
 
+    # 🔹 Allow action only if pending
     if report.status != "pending":
         raise HTTPException(status_code=400, detail="Already processed")
 
-    if action not in ["verified", "rejected"]:
+    # 🔹 Validate action
+    if action_data.action not in ["verified", "rejected"]:
         raise HTTPException(status_code=400, detail="Invalid action")
 
-    report.status = action
+    # 🔹 Update status
+    report.status = action_data.action
     db.commit()
 
-    return {"message": f"Report {action} successfully"}
+    return {"message": f"Report {action_data.action} successfully"}
