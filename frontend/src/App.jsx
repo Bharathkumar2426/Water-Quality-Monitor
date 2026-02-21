@@ -8,6 +8,7 @@ import StationHistory from "./components/StationHistory";
 import NGODashboard from "./components/NGODashboard";
 import Analytics from "./components/Analytics";
 
+
 export default function App() {
   const [activeTab, setActiveTab] = useState("login");
   const [email, setEmail] = useState("");
@@ -149,6 +150,7 @@ export default function App() {
               Submit Report
             </button>
 
+
             <button onClick={() => setDashboardView("alerts")}
               className="px-3 py-1 rounded bg-slate-200 hover:bg-slate-300">
               Alerts
@@ -167,6 +169,7 @@ export default function App() {
 
             {/* NGO Dashboard only for NGO & Admin */}
             {(user.role === "ngo" || user.role === "admin") && (
+
             <button
             onClick={() => setDashboardView("ngo")}
             className="px-3 py-1 rounded bg-slate-200 hover:bg-slate-300">
@@ -174,7 +177,7 @@ export default function App() {
             </button>
             )}
 
-            {/* Analytics */}
+             {/* Analytics */}
             <button
             onClick={() => setDashboardView("analytics")}
             className="px-3 py-1 rounded bg-slate-200 hover:bg-slate-300">
@@ -195,6 +198,7 @@ export default function App() {
                 Logout
               </button>
             </div>
+
           </div>
         </header>
 

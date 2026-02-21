@@ -9,6 +9,7 @@ class ReportActionSchema(BaseModel):
     action: str
 
 
+
 router = APIRouter(
     prefix="/reports",
     tags=["Reports"]
@@ -22,6 +23,7 @@ def get_db():
         yield db
     finally:
         db.close()
+
 
 @router.post("/")
 def create_report(
@@ -40,13 +42,14 @@ def create_report(
         water_source=data.water_source,
         status="pending",
         alert_id=data.alert_id   # ✅ important
+
     )
 
     db.add(report)
     db.commit()
     db.refresh(report)
 
-    # ✅ This must be inside the function
+
     if report.alert_id:
         alert = db.query(Alert).filter(Alert.id == report.alert_id).first()
         if alert:
@@ -58,6 +61,7 @@ def create_report(
         "report_id": report.id
     }
 
+
 @router.get("/")
 def get_reports(db: Session = Depends(get_db)):
     return db.query(Report).all()
@@ -66,6 +70,7 @@ def get_reports(db: Session = Depends(get_db)):
 class ReportStatusUpdate(BaseModel):
     report_id: int
     status: str
+
 
 @router.post("/{report_id}/action")
 def report_action(
@@ -79,9 +84,11 @@ def report_action(
         raise HTTPException(status_code=403, detail="Only authority allowed")
 
     # 🔹 Find report
+
     report = db.query(Report).filter(Report.id == report_id).first()
     if not report:
         raise HTTPException(status_code=404, detail="Report not found")
+
 
     # 🔹 Allow action only if pending
     if report.status != "pending":
@@ -96,3 +103,4 @@ def report_action(
     db.commit()
 
     return {"message": f"Report {action_data.action} successfully"}
+
