@@ -6,7 +6,7 @@ from pydantic import BaseModel, EmailStr, Field
 from typing import Literal,Optional
 from datetime import datetime
 from backend.database import Base
-from datetime import datetime
+
 #Base = declarative_base()
 
 class User(Base):
@@ -91,6 +91,7 @@ class ReportActionSchema(BaseModel):
     action: str
 
 
+
 class Alert(Base):
     __tablename__ = "alerts"
 
@@ -133,4 +134,5 @@ class CollaborationResponse(BaseModel):
 
     class Config:
         from_attributes = True
+
 
