@@ -3,6 +3,9 @@ import StationMap from "./components/StationMap";
 import Stations from "./components/Stations";
 import Reports from "./components/Reports";
 import ReportForm from "./components/ReportForm";
+import Alerts from "./components/Alerts";
+import StationHistory from "./components/StationHistory";
+
 
 
 export default function App() {
@@ -150,11 +153,42 @@ export default function App() {
             </button>
 
             <button
-              onClick={logout}
-              className="px-3 py-1 rounded bg-red-500 text-white hover:bg-red-600"
-            >
-              Logout
-            </button>
+  onClick={() => setDashboardView("history")}
+  className="px-3 py-1 rounded bg-slate-200 hover:bg-slate-300"
+>
+  History
+</button>
+
+            <button
+  onClick={() => setDashboardView("alerts")}
+  className="px-3 py-1 rounded bg-slate-200 hover:bg-slate-300"
+>
+  Alerts
+</button>
+
+
+            <div className="flex items-center gap-4">
+
+  {user && (
+    <div className="text-sm text-slate-700">
+      <span className="font-semibold">{user.email}</span>
+      {" "}
+      <span className="bg-blue-100 text-blue-700 px-2 py-1 rounded-full text-xs">
+        {user.role}
+      </span>
+    </div>
+  )}
+
+  <button
+    onClick={logout}
+    className="px-3 py-1 rounded bg-red-500 text-white hover:bg-red-600"
+  >
+    Logout
+  </button>
+
+</div>
+
+
           </div>
         </header>
 
@@ -163,7 +197,16 @@ export default function App() {
           {dashboardView === "map" && <StationMap />}
           {dashboardView === "stations" && <Stations />}
           {dashboardView === "reports" && <Reports />}
-          {dashboardView === "submit" && <ReportForm />}
+          {dashboardView === "submit" && (<ReportForm setDashboardView={setDashboardView} />)}
+          {dashboardView === "alerts" && (
+         <Alerts
+         key={dashboardView}
+          setDashboardView={setDashboardView}
+         />
+         )}
+
+          {dashboardView === "history" && <StationHistory />}
+
         </main>
 
       </div>

@@ -1,10 +1,12 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from backend.database import SessionLocal
-from backend.models import WaterStation, StationReading,StationCreate
+from backend.models import WaterStation, StationReading,StationCreate,Alert,StationReadingCreate
 from pydantic import BaseModel
 from fastapi import HTTPException
 from backend.security import get_current_user
+from datetime import datetime
+
 
 router = APIRouter(
     prefix="/stations",
@@ -29,7 +31,8 @@ def get_stations(db: Session = Depends(get_db)):
 def get_station_readings(station_id: int, db: Session = Depends(get_db)):
     return db.query(StationReading).filter(
         StationReading.station_id == station_id
-    ).all()
+
+    ).order_by(StationReading.recorded_at.asc()).all()
 
 
 @router.post("/")
@@ -57,3 +60,50 @@ def create_station(
         "message": "Station added successfully",
         "station_id": station.id
     }
+
+
+THRESHOLDS = {
+    "pH": 8.5,
+    "turbidity": 5,
+    "DO": 10,
+    "lead": 0.01,
+    "arsenic": 0.01
+}
+
+@router.post("/{station_id}/readings")
+def create_station_reading(
+    station_id: int,
+    data: StationReadingCreate,
+    db: Session = Depends(get_db)
+):
+    reading = StationReading(
+        station_id=station_id,
+        parameter=data.parameter,
+        value=data.value,
+        recorded_at=datetime.utcnow()
+    )
+
+    db.add(reading)
+    db.commit()
+    db.refresh(reading)
+    if data.parameter in THRESHOLDS and data.value > THRESHOLDS[data.parameter]:
+
+        station = db.query(WaterStation).filter(
+        WaterStation.id == station_id).first()
+
+        if station:
+            alert = Alert(
+            alert_type="contamination",
+            message=f"{data.parameter} level {data.value} exceeded safe limit {THRESHOLDS[data.parameter]}",
+            location=station.location,
+            station_id=station_id
+        )
+
+            db.add(alert)
+            db.commit()
+
+    return {
+        "message": "Reading added successfully",
+        "reading_id": reading.id
+    }
+

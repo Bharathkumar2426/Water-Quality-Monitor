@@ -1,10 +1,13 @@
 from sqlalchemy import Column, Integer, String, TIMESTAMP
 from sqlalchemy.sql import func
 from sqlalchemy.orm import declarative_base
-
+from sqlalchemy import ForeignKey, Text,Float
 from pydantic import BaseModel, EmailStr, Field
+from typing import Literal,Optional
+from datetime import datetime
+from backend.database import Base
 
-Base = declarative_base()
+#Base = declarative_base()
 
 class User(Base):
     __tablename__ = "users"
@@ -16,8 +19,6 @@ class User(Base):
     role = Column(String)
     location = Column(String)
     created_at = Column(TIMESTAMP, server_default=func.now())
-
-
 
 class UserRegister(BaseModel):
     name: str
@@ -35,12 +36,6 @@ class TokenResponse(BaseModel):
     token_type: str
 
 
-# =========================
-# WEEK 3 - REPORT MODEL
-# =========================
-
-from sqlalchemy import ForeignKey, Text
-
 class Report(Base):
     __tablename__ = "reports"
 
@@ -52,21 +47,17 @@ class Report(Base):
     water_source = Column(String)
     status = Column(String, default="pending")
     created_at = Column(TIMESTAMP, server_default=func.now())
+    alert_id = Column(Integer, nullable=True)
 
-
-from pydantic import BaseModel
 
 class ReportCreate(BaseModel):
     photo_url: str
     location: str
     description: str
     water_source: str
+    alert_id: Optional[int] = None
 
-# =========================
-# WEEK 4 - STATION MODELS
-# =========================
 
-from sqlalchemy import Float, ForeignKey
 
 class WaterStation(Base):
     __tablename__ = "water_stations"
@@ -96,9 +87,28 @@ class StationCreate(BaseModel):
     longitude: float
     managed_by: str
 
-
-from pydantic import BaseModel
-from typing import Literal
-
 class ReportActionSchema(BaseModel):
-    action: Literal["verified", "rejected"]
+    action: str
+
+
+class Alert(Base):
+    __tablename__ = "alerts"
+
+    id = Column(Integer, primary_key=True, index=True)
+
+    alert_type = Column(String, nullable=False)
+    message = Column(Text, nullable=False)
+    location = Column(String, nullable=False)
+
+    station_id = Column(Integer, nullable=True)
+    report_id = Column(Integer, nullable=True)
+
+    created_at = Column(
+        TIMESTAMP,
+        default=datetime.utcnow
+    )
+class StationReadingCreate(BaseModel):
+    parameter: str
+    value: float
+
+
