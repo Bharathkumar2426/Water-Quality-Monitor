@@ -53,7 +53,10 @@ def login(user: UserLogin):
             "role": db_user.role
         })
 
-        return {"access_token": token, "token_type": "bearer"}
+        return {
+    "access_token": token,
+    "token_type": "bearer",
+    "role": db_user.role}
     finally:
         db.close()
 
@@ -66,3 +69,16 @@ def my_profile(current_user = Depends(get_current_user)):
         "message": "Authenticated user",
         "user": current_user
     }
+
+from fastapi import Depends, HTTPException, status
+from backend.security import get_current_user
+
+def require_role(allowed_roles: list):
+    def role_checker(current_user = Depends(get_current_user)):
+        if current_user["role"] not in allowed_roles:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="You are not authorized"
+            )
+        return current_user
+    return role_checker

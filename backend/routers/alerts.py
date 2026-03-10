@@ -20,3 +20,29 @@ def get_db():
 def get_alerts(db: Session = Depends(get_db)):
     alerts = db.query(Alert).all()
     return alerts
+
+from backend.security import role_required
+from backend.models import Alert
+from datetime import datetime
+
+
+@router.post("/")
+def create_alert(
+    alert_type: str,
+    message: str,
+    location: str,
+    db: Session = Depends(get_db),
+    user = Depends(role_required(["authority", "admin"]))
+):
+    alert = Alert(
+        alert_type=alert_type,
+        message=message,
+        location=location,
+        created_at=datetime.utcnow()
+    )
+
+    db.add(alert)
+    db.commit()
+    db.refresh(alert)
+
+    return {"message": "Alert created", "alert_id": alert.id}

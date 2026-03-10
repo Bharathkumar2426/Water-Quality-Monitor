@@ -4,7 +4,7 @@ from backend.database import SessionLocal
 from backend.models import WaterStation, StationReading,StationCreate,Alert,StationReadingCreate
 from pydantic import BaseModel
 from fastapi import HTTPException
-from backend.security import get_current_user
+from backend.security import get_current_user,role_required
 from datetime import datetime
 
 
@@ -39,7 +39,7 @@ def get_station_readings(station_id: int, db: Session = Depends(get_db)):
 def create_station(
     data: StationCreate,
     db: Session = Depends(get_db),
-    current_user = Depends(get_current_user)
+    current_user = Depends(role_required(["authority","admin"]))
 ):
     if not data:
         raise HTTPException(status_code=400, detail="Empty request body")
@@ -113,7 +113,10 @@ def create_station_reading(
     }
 
 @router.get("/analytics/summary")
-def analytics_summary(db: Session = Depends(get_db)):
+def analytics_summary(
+    db: Session = Depends(get_db),
+    user = Depends(role_required(["authority","admin"]))
+):
 
     total_stations = db.query(WaterStation).count()
     total_readings = db.query(StationReading).count()

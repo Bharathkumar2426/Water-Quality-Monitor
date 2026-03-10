@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from backend.database import SessionLocal
 from backend.models import Report,Alert,ReportCreate
-from backend.security import get_current_user
+from backend.security import get_current_user,role_required
 from pydantic import BaseModel
 
 class ReportActionSchema(BaseModel):
@@ -28,7 +28,7 @@ def get_db():
 @router.post("/")
 def create_report(
     data: ReportCreate,
-    user=Depends(get_current_user),
+    user = Depends(role_required(["citizen"])),
     db: Session = Depends(get_db)
 ):
     if not data:
@@ -80,7 +80,7 @@ def report_action(
     current_user=Depends(get_current_user)
 ):
     # 🔹 Allow only authority
-    if current_user["role"] != "authority":
+    if current_user["role"] not in ["authority","admin"]:
         raise HTTPException(status_code=403, detail="Only authority allowed")
 
     # 🔹 Find report

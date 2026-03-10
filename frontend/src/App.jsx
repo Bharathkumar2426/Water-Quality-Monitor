@@ -45,6 +45,7 @@ export default function App() {
 
       const data = await res.json();
       localStorage.setItem("token", data.access_token);
+      localStorage.setItem("role", data.role);   // ADD THIS
       loadUser();
     } catch {
       alert("Backend not reachable");
@@ -135,20 +136,24 @@ export default function App() {
               Map
             </button>
 
-            <button onClick={() => setDashboardView("stations")}
+            {(user.role === "authority" || user.role === "admin") && (
+              <button onClick={() => setDashboardView("stations")}
               className="px-3 py-1 rounded bg-slate-200 hover:bg-slate-300">
               Stations
-            </button>
+              </button>
+            )}
 
             <button onClick={() => setDashboardView("reports")}
               className="px-3 py-1 rounded bg-slate-200 hover:bg-slate-300">
               Reports
             </button>
 
+            {user.role === "citizen" && (
             <button onClick={() => setDashboardView("submit")}
-              className="px-3 py-1 rounded bg-slate-200 hover:bg-slate-300">
-              Submit Report
+            className="px-3 py-1 rounded bg-slate-200 hover:bg-slate-300">
+            Submit Report
             </button>
+            )}
 
 
             <button onClick={() => setDashboardView("alerts")}
@@ -178,11 +183,12 @@ export default function App() {
             )}
 
              {/* Analytics */}
+            {(user.role === "authority" || user.role === "admin") && (
             <button
-            onClick={() => setDashboardView("analytics")}
-            className="px-3 py-1 rounded bg-slate-200 hover:bg-slate-300">
+              onClick={() => setDashboardView("analytics")}
+          className="px-3 py-1 rounded bg-slate-200 hover:bg-slate-300">
             Analytics
-            </button>
+            </button>)}
 
             <div className="flex items-center gap-4 ml-4">
               <div className="text-sm text-slate-700">
@@ -205,15 +211,17 @@ export default function App() {
         {/* MAIN CONTENT */}
         <main className="p-6">
           {dashboardView === "map" && <StationMap />}
-          {dashboardView === "stations" && <Stations />}
+          {dashboardView === "stations" &&(user.role === "authority" || user.role === "admin") &&
+                <Stations />}
           {dashboardView === "reports" && <Reports />}
-          {dashboardView === "submit" && (
-            <ReportForm setDashboardView={setDashboardView} />
-          )}
+          {dashboardView === "submit" && user.role === "citizen" &&
+                <ReportForm setDashboardView={setDashboardView} />}
           {dashboardView === "alerts" && <Alerts />}
           {dashboardView === "history" && <StationHistory />}
-          {dashboardView === "ngo" && <NGODashboard />}
-          {dashboardView === "analytics" && <Analytics />}
+          {dashboardView === "ngo" && (user.role === "ngo" || user.role === "admin") &&
+                <NGODashboard />}
+          {dashboardView === "analytics" && (user.role === "authority" || user.role === "admin") &&
+                <Analytics />}
         </main>
       </div>
     );

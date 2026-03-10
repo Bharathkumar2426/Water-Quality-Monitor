@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import axios from "axios"
 
 export default function NGODashboard() {
+
   const [projects, setProjects] = useState([])
   const [form, setForm] = useState({
     ngo_name: "",
@@ -10,7 +11,14 @@ export default function NGODashboard() {
   })
 
   const fetchProjects = () => {
-    axios.get("http://localhost:8000/collaborations")
+
+    const token = localStorage.getItem("token")
+
+    axios.get("http://localhost:8000/collaborations", {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
       .then(res => setProjects(res.data))
       .catch(err => console.error(err))
   }
@@ -20,15 +28,25 @@ export default function NGODashboard() {
   }, [])
 
   const handleSubmit = async (e) => {
+
     e.preventDefault()
 
+    const token = localStorage.getItem("token")
+
     try {
+
       await axios.post(
         "http://localhost:8000/collaborations",
-        form
+        form,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
       )
 
       alert("Collaboration created successfully!")
+
       setForm({
         ngo_name: "",
         project_name: "",
@@ -36,6 +54,7 @@ export default function NGODashboard() {
       })
 
       fetchProjects()
+
     } catch (error) {
       console.error(error)
       alert("Error creating collaboration")
@@ -43,44 +62,66 @@ export default function NGODashboard() {
   }
 
   return (
-    <div style={{ padding: "20px" }}>
-      <h2>NGO Dashboard</h2>
+    <div className="p-6 max-w-5xl mx-auto">
 
-      <form onSubmit={handleSubmit} style={{ marginBottom: "20px" }}>
+      <h2 className="text-2xl font-bold text-slate-700 mb-4">
+        NGO Dashboard
+      </h2>
+
+      <form
+        onSubmit={handleSubmit}
+        className="bg-white shadow-md rounded-xl p-4 mb-6 flex flex-wrap gap-3"
+      >
+
         <input
+          className="border rounded-lg p-2 flex-1 min-w-[200px] focus:outline-none focus:ring-2 focus:ring-blue-400"
           placeholder="NGO Name"
           value={form.ngo_name}
           onChange={e => setForm({ ...form, ngo_name: e.target.value })}
         />
 
         <input
+          className="border rounded-lg p-2 flex-1 min-w-[200px] focus:outline-none focus:ring-2 focus:ring-blue-400"
           placeholder="Project Name"
           value={form.project_name}
           onChange={e => setForm({ ...form, project_name: e.target.value })}
         />
 
         <input
+          className="border rounded-lg p-2 flex-1 min-w-[200px] focus:outline-none focus:ring-2 focus:ring-blue-400"
           placeholder="Contact Email"
           value={form.contact_email}
           onChange={e => setForm({ ...form, contact_email: e.target.value })}
         />
 
-        <button type="submit">Create Collaboration</button>
+        <button
+          type="submit"
+          className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition"
+        >
+          Create Collaboration
+        </button>
+
       </form>
 
-      <h3>Existing Projects</h3>
+      <h3 className="text-lg font-semibold text-slate-700 mb-3">
+        Existing Projects
+      </h3>
 
       {projects.length === 0 ? (
-        <p>No collaborations yet</p>
+        <p className="text-gray-500 italic">No collaborations yet</p>
       ) : (
         projects.map(project => (
-          <div key={project.id} style={{ border: "1px solid #ccc", padding: "10px", marginBottom: "10px" }}>
-            <strong>{project.project_name}</strong>
-            <p>NGO: {project.ngo_name}</p>
-            <p>Email: {project.contact_email}</p>
+          <div
+            key={project.id}
+            className="bg-white border rounded-xl shadow-sm p-4 mb-3 hover:shadow-md transition"
+          >
+            <strong className="text-blue-600">{project.project_name}</strong>
+            <p className="text-gray-600">NGO: {project.ngo_name}</p>
+            <p className="text-gray-600">Email: {project.contact_email}</p>
           </div>
         ))
       )}
+
     </div>
   )
 }
