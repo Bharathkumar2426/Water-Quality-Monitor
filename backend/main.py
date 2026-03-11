@@ -4,12 +4,12 @@ load_dotenv()
 
 from fastapi import FastAPI
 from sqlalchemy import text
-from backend.database import SessionLocal
-from backend.routers import auth
+from database import SessionLocal
+from routers import auth
 from fastapi.middleware.cors import CORSMiddleware
 
-from backend.database import engine
-from backend.models import Base
+from database import engine
+from models import Base
 Base.metadata.create_all(bind=engine)
 
 
@@ -41,21 +41,21 @@ def test_db():
 app.include_router(auth.router)
 
 
-from backend.routers import reports
+from routers import reports
 
 app.include_router(reports.router)
 
-from backend.routers import stations
+from routers import stations
 
 app.include_router(stations.router)
 
-from backend.routers.alerts import router as alerts_router
+from routers.alerts import router as alerts_router
 
 app.include_router(alerts_router)
 
 
 
-from backend.routers.collaborations import router as collaboration_router
+from routers.collaborations import router as collaboration_router
 app.include_router(collaboration_router)
 
 
