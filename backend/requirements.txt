@@ -6,4 +6,4 @@ python-jose
 passlib[bcrypt]
 python-dotenv
 pydantic
-
+email-validator
