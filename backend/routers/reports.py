@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from backend.database import SessionLocal
-from backend.models import Report,Alert,ReportCreate
-from backend.security import get_current_user,role_required
+from database import SessionLocal
+from models import Report,Alert,ReportCreate
+from security import get_current_user,role_required
 from pydantic import BaseModel
 
 class ReportActionSchema(BaseModel):

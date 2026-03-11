@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
-from backend.security import get_current_user
-from backend.database import SessionLocal
-from backend.models import Alert
+from security import get_current_user
+from database import SessionLocal
+from models import Alert
 
 router = APIRouter(
     prefix="/alerts",

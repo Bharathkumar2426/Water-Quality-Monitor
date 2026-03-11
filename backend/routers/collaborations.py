@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
-from backend.database import SessionLocal
-from backend.models import Collaboration, CollaborationCreate, CollaborationResponse
-from backend.security import role_required
+from database import SessionLocal
+from models import Collaboration, CollaborationCreate, CollaborationResponse
+from security import role_required
 router = APIRouter(prefix="/collaborations", tags=["Collaborations"])
 
 def get_db():
