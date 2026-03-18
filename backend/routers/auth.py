@@ -1,8 +1,8 @@
 from fastapi import APIRouter, HTTPException,Body, Depends,status
 from sqlalchemy import text
-from database import SessionLocal
-from models import UserRegister, UserLogin
-from security import hash_password, verify_password, create_access_token
+from backend.database import SessionLocal
+from backend.models import UserRegister, UserLogin
+from backend.security import hash_password, verify_password, create_access_token
 
 router = APIRouter(prefix="/auth", tags=["Authentication"])
 
@@ -61,7 +61,7 @@ def login(user: UserLogin):
         db.close()
 
 from fastapi import Depends
-from security import get_current_user
+from backend.security import get_current_user
 
 @router.get("/me")
 def my_profile(current_user = Depends(get_current_user)):
@@ -71,7 +71,7 @@ def my_profile(current_user = Depends(get_current_user)):
     }
 
 from fastapi import Depends, HTTPException, status
-from security import get_current_user
+from backend.security import get_current_user
 
 def require_role(allowed_roles: list):
     def role_checker(current_user = Depends(get_current_user)):

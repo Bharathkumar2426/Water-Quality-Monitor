@@ -5,7 +5,7 @@ from sqlalchemy import ForeignKey, Text,Float
 from pydantic import BaseModel, EmailStr, Field
 from typing import Literal,Optional
 from datetime import datetime
-from database import Base
+from backend.database import Base
 
 #Base = declarative_base()
 

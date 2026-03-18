@@ -1,10 +1,10 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
-from database import SessionLocal
-from models import WaterStation, StationReading,StationCreate,Alert,StationReadingCreate
+from backend.database import SessionLocal
+from backend.models import WaterStation, StationReading,StationCreate,Alert,StationReadingCreate
 from pydantic import BaseModel
 from fastapi import HTTPException
-from security import get_current_user,role_required
+from backend.security import get_current_user,role_required
 from datetime import datetime
 
 
