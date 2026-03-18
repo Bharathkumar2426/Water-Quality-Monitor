@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 
+const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:8000";
+
 export default function Alerts({ setDashboardView }) {
   const [alerts, setAlerts] = useState([]);
 
@@ -10,7 +12,7 @@ export default function Alerts({ setDashboardView }) {
   useEffect(() => {
   const loadAlerts = async () => {
     try {
-      const response = await axios.get("http://localhost:8000/alerts");
+      const response = await axios.get(`${API_BASE}/alerts`);
       setAlerts(response.data);
     } catch (error) {
       console.error("Error fetching alerts:", error);

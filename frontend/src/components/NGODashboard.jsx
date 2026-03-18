@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react"
 import axios from "axios"
 
+const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:8000";
+
 export default function NGODashboard() {
 
   const [projects, setProjects] = useState([])
@@ -14,7 +16,7 @@ export default function NGODashboard() {
 
     const token = localStorage.getItem("token")
 
-    axios.get("http://localhost:8000/collaborations", {
+    axios.get(`${API_BASE}/collaborations`, {
       headers: {
         Authorization: `Bearer ${token}`
       }
@@ -36,7 +38,7 @@ export default function NGODashboard() {
     try {
 
       await axios.post(
-        "http://localhost:8000/collaborations",
+        `${API_BASE}/collaborations`,
         form,
         {
           headers: {

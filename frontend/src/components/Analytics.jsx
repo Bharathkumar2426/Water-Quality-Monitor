@@ -16,6 +16,7 @@ ResponsiveContainer
 } from "recharts"
 
 const COLORS = ["#3b82f6", "#ef4444", "#10b981", "#f59e0b"]
+const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:8000";
 
 export default function Analytics() {
 
@@ -26,7 +27,7 @@ useEffect(() => {
   const token = localStorage.getItem("token")
 
   axios.get(
-    "http://localhost:8000/stations/analytics/summary",
+    `${API_BASE}/stations/analytics/summary`,
     {
       headers: {
         Authorization: `Bearer ${token}`

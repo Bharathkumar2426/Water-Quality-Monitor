@@ -12,6 +12,8 @@ import {
   ReferenceLine
 } from "recharts";
 
+const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:8000";
+
 export default function StationHistory() {
   const [readings, setReadings] = useState([]);
   const [stations, setStations] = useState([]);
@@ -21,14 +23,14 @@ export default function StationHistory() {
   useEffect(() => {
   const fetchStations = async () => {
     try {
-      const response = await axios.get("http://localhost:8000/stations");
+      const response = await axios.get(`${API_BASE}/stations`);
 
 const stationsWithReadings = [];
 
 for (let station of response.data) {
   try {
     const readingsResponse = await axios.get(
-      `http://localhost:8000/stations/${station.id}/readings`
+      `${API_BASE}/stations/${station.id}/readings`
     );
 
     if (readingsResponse.data.length > 0) {
@@ -58,7 +60,7 @@ if (stationsWithReadings.length > 0) {
   const fetchReadings = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:8000/stations/${stationId}/readings`
+        `${API_BASE}/stations/${stationId}/readings`
       );
 
       setReadings(response.data);   // ✅ THIS LINE MUST EXIST
