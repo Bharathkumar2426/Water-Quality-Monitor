@@ -24,7 +24,7 @@ app.add_middleware(
         "http://localhost:3000",
         "http://127.0.0.1:5173",
         "http://127.0.0.1:3000",
-        "https://water-quality-monitor-frontend.vercel.app",  # Add your Vercel domain
+        "https://water-quality-monitor-kp1x.vercel.app",  # Your specific Vercel domain
         "*"  # Allow all origins for deployment (update with your Vercel URL later)
     ],
     allow_credentials=True,
