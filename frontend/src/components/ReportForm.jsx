@@ -10,8 +10,10 @@ export default function ReportForm({setDashboardView}) {
   const alertId = localStorage.getItem("selectedAlertId");
 
 
+  const API_BASE = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000";
+
   const submitReport = () => {
-    fetch("http://127.0.0.1:8000/reports", {
+    fetch(`${API_BASE}/reports`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

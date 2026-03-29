@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 
+const API_BASE = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000";
+
 export default function Reports() {
   const [reports, setReports] = useState([]);
   const [userRole, setUserRole] = useState(null);
@@ -8,7 +10,7 @@ export default function Reports() {
 
 
   useEffect(() => {
-    fetch("http://127.0.0.1:8000/reports", {
+    fetch(`${API_BASE}/reports`, {
       headers: {
 
         Authorization: `Bearer ${token}`,
@@ -40,7 +42,7 @@ export default function Reports() {
   try {
 
     const res = await fetch(
-      `http://127.0.0.1:8000/reports/${reportId}/action`,
+      `${API_BASE}/reports/${reportId}/action`,
       {
         method: "POST",
         headers: {

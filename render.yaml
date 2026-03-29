@@ -7,9 +7,10 @@ services:
     startCommand: cd backend && uvicorn main:app --host 0.0.0.0 --port $PORT
     envVars:
       - key: DATABASE_URL
-        value: postgresql://postgres:Bharath2006@localhost:5432/water_monitor
+        # replace with your Render Postgres DB URL or separate secret from UI
+        value: ${DATABASE_URL}
       - key: SECRET_KEY
-        value: 5N2sF8mQx4cG9vZtYh7RpLk3S1dJ0aW2
+        value: ${SECRET_KEY}
       - key: ALGORITHM
         value: HS256
       - key: ACCESS_TOKEN_EXPIRE_MINUTES

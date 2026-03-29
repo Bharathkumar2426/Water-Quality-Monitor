@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-const API_URL = "http://127.0.0.1:8000";
+const API_BASE = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000";
 
 export default function Stations() {
   const [stations, setStations] = useState([]);
@@ -15,7 +15,7 @@ export default function Stations() {
   useEffect(() => {
     async function loadStations() {
       try {
-        const res = await fetch(`${API_URL}/stations`);
+        const res = await fetch(`${API_BASE}/stations`);
         const data = await res.json();
         setStations(data);
       } catch (err) {
@@ -41,7 +41,7 @@ export default function Stations() {
         return;
       }
 
-      const res = await fetch(`${API_URL}/stations`, {
+      const res = await fetch(`${API_BASE}/stations`, {
       method: "POST",
       headers: {
       "Content-Type": "application/json",
@@ -73,7 +73,7 @@ export default function Stations() {
 
       // reload stations after submit
       async function reloadStations() {
-        const res = await fetch(`${API_URL}/stations`);
+        const res = await fetch(`${API_BASE}/stations`);
         const data = await res.json();
         setStations(data);
       }

@@ -20,6 +20,8 @@ export default function App() {
   const [loading, setLoading] = useState(false);
   const [dashboardView, setDashboardView] = useState("map");
 
+  const apiUrl = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000";
+
   /* ================= AUTH FUNCTIONS ================= */
 
   const login = async () => {
@@ -30,7 +32,7 @@ export default function App() {
 
     setLoading(true);
     try {
-      const res = await fetch("http://127.0.0.1:8000/auth/login", {
+      const res = await fetch(`${apiUrl}/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
@@ -61,7 +63,7 @@ export default function App() {
 
     setLoading(true);
     try {
-      const res = await fetch("http://127.0.0.1:8000/auth/register", {
+      const res = await fetch(`${apiUrl}/auth/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -93,7 +95,7 @@ export default function App() {
     if (!token) return;
 
     try {
-      const res = await fetch("http://127.0.0.1:8000/auth/me", {
+      const res = await fetch(`${apiUrl}/auth/me`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 

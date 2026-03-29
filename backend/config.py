@@ -5,6 +5,11 @@ from dotenv import load_dotenv
 load_dotenv()
 
 DATABASE_URL = os.getenv("DATABASE_URL")
+if not DATABASE_URL:
+    raise RuntimeError(
+        "DATABASE_URL is not set. Please create a .env file based on .env.example "
+        "and set DATABASE_URL to your database connection string."
+    )
 
 SECRET_KEY = os.getenv("SECRET_KEY")
 if not SECRET_KEY:

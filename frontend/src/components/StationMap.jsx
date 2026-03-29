@@ -2,11 +2,13 @@ import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import { useEffect, useState } from "react";
 import "leaflet/dist/leaflet.css";
 
+const API_BASE = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000";
+
 export default function StationMap() {
   const [stations, setStations] = useState([]);
 
   useEffect(() => {
-    fetch("http://127.0.0.1:8000/stations")
+    fetch(`${API_BASE}/stations`)
       .then((res) => res.json())
       .then((data) => {
         console.log("Stations:", data); // debug
